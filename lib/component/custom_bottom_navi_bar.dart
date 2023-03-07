@@ -1,13 +1,15 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_musinsa_clone/component/home_widget.dart';
 
 class CustomBottomNaviBar extends StatefulWidget {
   final ScrollController scrollController;
+  final int currentIndex;
 
-  const CustomBottomNaviBar({Key? key, required this.scrollController})
-      : super(key: key);
+  const CustomBottomNaviBar({
+    Key? key,
+    required this.scrollController,
+    required this.currentIndex,
+  }) : super(key: key);
 
   @override
   State<CustomBottomNaviBar> createState() => _CustomBottomNaviBarState();
@@ -15,6 +17,10 @@ class CustomBottomNaviBar extends StatefulWidget {
 
 class _CustomBottomNaviBarState extends State<CustomBottomNaviBar> {
   bool _isVisible = true;
+
+  void _onItemTapped(int index) {
+    setState(() {});
+  }
 
   @override
   void initState() {
@@ -25,6 +31,7 @@ class _CustomBottomNaviBarState extends State<CustomBottomNaviBar> {
   @override
   void dispose() {
     widget.scrollController.removeListener(_onScroll);
+    dispose();
     super.dispose();
   }
 
@@ -48,26 +55,24 @@ class _CustomBottomNaviBarState extends State<CustomBottomNaviBar> {
     return AnimatedContainer(
       duration: Duration(milliseconds: 200),
       height: _isVisible ? kBottomNavigationBarHeight : 0.0,
-      child: CupertinoTabScaffold(
-        tabBar: CupertinoTabBar(
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: 'Settings',
-            ),
-          ],
-        ),
-        tabBuilder: (BuildContext context, int index) {
-          return Expanded(
-            child: HomeWidget(
-              scrollController: widget.scrollController,
-            ),
-          );
-        },
+      child: Wrap(
+        children: [
+          BottomNavigationBar(
+            elevation: 0,
+            items: [
+              BottomNavigationBarItem(
+                icon: Icon(Icons.home),
+                label: 'Home',
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(Icons.settings),
+                label: 'Settings',
+              ),
+            ],
+            currentIndex: widget.currentIndex,
+            onTap: _onItemTapped,
+          ),
+        ],
       ),
     );
   }
