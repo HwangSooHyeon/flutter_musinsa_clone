@@ -10,13 +10,13 @@ class CarouselPageRepository {
 
   Future<List<CarouselPage>> getCarouselPages(
       {required String companyId}) async {
-    final reaponse = await _dio.get(
+    final response = await _dio.get(
       _targetUrl,
       queryParameters: {
         'companyId': companyId,
       },
     );
-    return reaponse.data
+    return response.data
         .map<CarouselPage>(
           (x) => CarouselPage.fromJson(
             json: x,
