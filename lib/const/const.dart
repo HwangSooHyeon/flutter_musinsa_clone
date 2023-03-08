@@ -1,0 +1,1 @@
+const tabBarLength = 5;
