@@ -1,1 +1,1 @@
-const tabBarLength = 5;
+const int tabBarLength = 5;
