@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_musinsa_clone/component/custom_tab_bar_delegate.dart';
+
+import '../const/const.dart';
 
 class HomeWidget extends StatelessWidget {
   final ScrollController scrollController;
@@ -8,21 +11,53 @@ class HomeWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CustomScrollView(
-      controller: scrollController,
-      slivers: <Widget>[
-        SliverAppBar(
-          title: Text('My App'),
-          floating: true,
-          snap: true,
+    return SafeArea(
+      child: DefaultTabController(
+        length: tabBarLength,
+        child: CustomScrollView(
+          controller: scrollController,
+          slivers: <Widget>[
+            SliverAppBar(
+              title: Text(
+                'MUSINSA',
+                style: TextStyle(
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              backgroundColor: Colors.white,
+              floating: true,
+              snap: true,
+              elevation: 0,
+            ),
+            SliverPersistentHeader(
+              pinned: true,
+              delegate: CustomTabBarDelegate(),
+            ),
+            SliverFillRemaining(
+              child: TabBarView(
+                children: [
+                  Container(
+                    color: Colors.amber,
+                  ),
+                  Container(
+                    color: Colors.redAccent,
+                  ),
+                  Container(
+                    color: Colors.blue,
+                  ),
+                  Container(
+                    color: Colors.amber,
+                  ),
+                  Container(
+                    color: Colors.redAccent,
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) => ListTile(title: Text('Item #$index')),
-            childCount: 100,
-          ),
-        ),
-      ],
+      ),
     );
   }
 }
