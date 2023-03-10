@@ -1,1 +1,2 @@
-const int tabBarLength = 5;
+const tabBarLength = 5;
+const tabHorizontalPadding = 4.0;
