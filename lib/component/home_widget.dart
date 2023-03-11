@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_musinsa_clone/component/custom_tab_bar_delegate.dart';
-import 'package:flutter_musinsa_clone/component/main_carousel.dart';
+import 'package:flutter_musinsa_clone/screen/recommendation_screen.dart';
 
 import '../const/const.dart';
 
 class HomeWidget extends StatelessWidget {
-  final ScrollController scrollController;
+  ScrollController scrollController;
 
-  const HomeWidget({Key? key, required this.scrollController})
+  HomeWidget({Key? key, required this.scrollController})
       : super(key: key);
 
   @override
@@ -38,15 +38,7 @@ class HomeWidget extends StatelessWidget {
             SliverFillRemaining(
               child: TabBarView(
                 children: [
-                  Wrap(
-                    children: [
-                      MainCarousel(),
-                      Container(
-                        height: 1000,
-                        color: Colors.amber,
-                      ),
-                    ],
-                  ),
+                  RecommendationScreen(),
                   Container(
                     color: Colors.redAccent,
                   ),
