@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter_musinsa_clone/component/custom_bottom_navi_bar.dart';
 import 'package:flutter_musinsa_clone/component/home_widget.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -61,13 +60,15 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
 
     return Scaffold(
+      backgroundColor: Colors.white,
       body: _pages[_currentIndex],
       bottomNavigationBar: AnimatedContainer(
         duration: Duration(milliseconds: 200),
-        height: _isVisible ? kBottomNavigationBarHeight : 0.0,
+        height: _isVisible ? 80 : 0.0,
         child: Wrap(
           children: [
             BottomNavigationBar(
+              backgroundColor: Colors.white,
               elevation: 0,
               items: [
                 BottomNavigationBarItem(
