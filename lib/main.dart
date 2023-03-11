@@ -8,13 +8,15 @@ import 'package:provider/provider.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final carouselPageRepository = CarouselPageRepository();
-  final carouselPageProvider = CarouselPageProvider(repository: carouselPageRepository);
+  final carouselPageProvider =
+      CarouselPageProvider(repository: carouselPageRepository);
 
   runApp(
     ChangeNotifierProvider(
       create: (_) => carouselPageProvider,
       child: MaterialApp(
-          home: HomeScreen(),
+        debugShowCheckedModeBanner: false,
+        home: HomeScreen(),
       ),
     ),
   );
