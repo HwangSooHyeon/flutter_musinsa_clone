@@ -14,4 +14,9 @@ class CarouselPage {
   })  : id = json['id'],
         imgPath = json['imgPath'],
         companyId = json['companyId'];
+
+  @override
+  String toString() {
+    return 'id: $id, imgPath: $imgPath, companyId: $companyId';
+  }
 }
