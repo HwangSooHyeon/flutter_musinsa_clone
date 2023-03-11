@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_musinsa_clone/component/custom_tab_bar_delegate.dart';
+import 'package:flutter_musinsa_clone/component/main_carousel.dart';
 
 import '../const/const.dart';
 
@@ -37,8 +38,14 @@ class HomeWidget extends StatelessWidget {
             SliverFillRemaining(
               child: TabBarView(
                 children: [
-                  Container(
-                    color: Colors.amber,
+                  Wrap(
+                    children: [
+                      MainCarousel(),
+                      Container(
+                        height: 1000,
+                        color: Colors.amber,
+                      ),
+                    ],
                   ),
                   Container(
                     color: Colors.redAccent,
