@@ -7,10 +7,13 @@ class CarouselPageProvider extends ChangeNotifier {
   final CarouselPageRepository repository;
 
   Map<String, List<CarouselPage>> cache = {};
+  String companyId = 'musinsa';
 
   CarouselPageProvider({
     required this.repository,
-  });
+  }) : super() {
+    getCarouselPages(companyId: companyId);
+  }
 
   void getCarouselPages({
     required String companyId,
