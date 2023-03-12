@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "127365978885",
+    "project_id": "flutter-musinsa-clone",
+    "storage_bucket": "flutter-musinsa-clone.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:127365978885:android:d19996bfbeb6f4b55df56c",
+        "android_client_info": {
+          "package_name": "com.example.flutter_musinsa_clone"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "127365978885-7a7b04erbhavtejrhgcsgg0jg0ct110d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDWAw8OiumxICDtYpPjiLxMOTuhyUo597k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "127365978885-7a7b04erbhavtejrhgcsgg0jg0ct110d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

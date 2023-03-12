@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>127365978885-rhe9v71f6ibqagukup365alu7c01qfro.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.127365978885-rhe9v71f6ibqagukup365alu7c01qfro</string>
+	<key>API_KEY</key>
+	<string>AIzaSyDFOrk9w5yPeueP2vEETZyX0Lue4E-4dn8</string>
+	<key>GCM_SENDER_ID</key>
+	<string>127365978885</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.flutterMusinsaClone</string>
+	<key>PROJECT_ID</key>
+	<string>flutter-musinsa-clone</string>
+	<key>STORAGE_BUCKET</key>
+	<string>flutter-musinsa-clone.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:127365978885:ios:7769b082528131be5df56c</string>
+</dict>
+</plist>
