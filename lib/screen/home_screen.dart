@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_musinsa_clone/component/home_widget.dart';
+import 'package:flutter_musinsa_clone/screen/my_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({
@@ -56,7 +57,9 @@ class _HomeScreenState extends State<HomeScreen> {
       HomeWidget(
         scrollController: scrollController,
       ),
-      Container(),
+      MyScreen(
+        scrollController: scrollController,
+      ),
     ];
 
     return Scaffold(
@@ -76,8 +79,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   label: 'Home',
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  label: 'Settings',
+                  icon: Icon(Icons.man),
+                  label: 'My',
                 ),
               ],
               currentIndex: _currentIndex,
