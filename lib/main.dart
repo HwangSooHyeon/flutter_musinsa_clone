@@ -1,5 +1,6 @@
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_musinsa_clone/firebase_options.dart';
 import 'package:flutter_musinsa_clone/provider/carousel_page_provider.dart';
 import 'package:flutter_musinsa_clone/provider/special_theme_provider.dart';
 import 'package:flutter_musinsa_clone/repository/carousel_page_repository.dart';
@@ -9,6 +10,11 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   final carouselPageRepository = CarouselPageRepository();
   final specialThemeRepository = SpecialThemeRepository();
 
