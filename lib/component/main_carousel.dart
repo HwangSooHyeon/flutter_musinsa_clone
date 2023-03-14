@@ -23,12 +23,12 @@ class _MainCarouselState extends State<MainCarousel> {
         seconds: 3,
       ),
       (timer) {
-        int? nextPage = pageController.page?.toInt();
-
+        int? nextPage = pageController.positions.isNotEmpty == true
+            ? pageController.page?.toInt()
+            : null;
         if (nextPage == null) return;
         nextPage++;
         if (nextPage > 2) nextPage = 0;
-        print('page number: $nextPage');
         pageController.animateToPage(
           nextPage,
           duration: Duration(milliseconds: 500),
