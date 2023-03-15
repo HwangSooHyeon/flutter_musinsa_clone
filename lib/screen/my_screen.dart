@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_musinsa_clone/screen/sign_in_screen.dart';
+import 'package:flutter_musinsa_clone/screen/sign_up_screen.dart';
 
 class MyScreen extends StatelessWidget {
   final ScrollController scrollController;
@@ -42,7 +43,14 @@ class MyScreen extends StatelessWidget {
               ),
               SizedBox(height: 8),
               OutlinedButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => SignUpScreen(),
+                    ),
+                  );
+                },
                 child: Text(
                   '회원가입',
                   style: TextStyle(
