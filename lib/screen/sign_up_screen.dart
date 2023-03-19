@@ -1,13 +1,26 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_musinsa_clone/component/custom_text_form_field.dart';
+import 'package:flutter_musinsa_clone/model/user.dart';
 
-class SignUpScreen extends StatelessWidget {
+class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
   @override
+  State<SignUpScreen> createState() => _SignUpScreenState();
+}
+
+class _SignUpScreenState extends State<SignUpScreen> {
+  @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
-    String _password = '';
+    final formKey = GlobalKey<FormState>();
+    String password = '';
+    String id = '';
+    String hashedPassword = '';
+    String email = '';
 
     return Scaffold(
       appBar: AppBar(
@@ -36,73 +49,210 @@ class SignUpScreen extends StatelessWidget {
         alignment: Alignment.topCenter,
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              SizedBox(height: 8),
-              Column(
-                children: [
-                  CustomTextFormField(
-                    label: '아이디',
-                    hint: '영문, 숫자 5 - 11자',
-                    isNecessary: true,
-                    isPassword: false,
-                    hasLabel: true,
-                    onSaved: (value) {},
-                    validator: (value) {
-                      return null;
-                    },
-                  ),
-                  CustomTextFormField(
-                    label: '비밀번호',
-                    hint: '숫자, 영문, 특수문자 조합 최소 8자',
-                    isNecessary: true,
-                    isPassword: true,
-                    hasLabel: true,
-                    onSaved: (value) {},
-                    validator: (value) {
-                      _password = value;
-                      return null;
-                    },
-                  ),
-                  CustomTextFormField(
-                    label: '비밀번호 재입력',
-                    hint: '비밀번호 재입력',
-                    isNecessary: true,
-                    isPassword: true,
-                    hasLabel: false,
-                    onSaved: (value) {},
-                    validator: (value) {
-                      if (_password != value && value != '') {
-                        return '비밀번호가 일치하지 않습니다.';
-                      }
-                    },
-                  ),
-                  CustomTextFormField(
-                      label: '이메일',
-                      hint: '계정 분실 시 본인인증 정보로 활용됩니다.',
+          key: formKey,
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: 8),
+                Column(
+                  children: [
+                    CustomTextFormField(
+                      label: '아이디',
+                      hint: '영문, 숫자 5 - 11자',
                       isNecessary: true,
                       isPassword: false,
                       hasLabel: true,
-                      onSaved: (value) {},
-                      validator: (value) {}),
-                  ElevatedButton(
-                    onPressed: () {},
-                    child: Text(
-                      '회원가입',
-                      style: TextStyle(
-                        color: Colors.white,
+                      onSaved: (value) {
+                        id = value;
+                      },
+                      validator: (value) {
+                        id = value;
+                        if (value.toString().isEmpty) {
+                          return '아이디는 필수 입니다.';
+                        }
+                        if (!RegExp(r'^[a-zA-Z0-9]{5,11}$').hasMatch(value)) {
+                          return '아이디는 영문, 숫자 5 - 11자 입니다.';
+                        }
+                      },
+                    ),
+                    ElevatedButton(
+                      onPressed: () async {
+                        var data = await FirebaseFirestore.instance
+                            .collection('user')
+                            .doc(id)
+                            .get();
+                        if (data.data() == null) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                content: Text('사용할 수 있는 아이디 입니다.'),
+                              );
+                            },
+                          );
+                        } else {
+                          if ((data.data() as Map<String, dynamic>)
+                              .containsValue(id)) {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: Text('사용할 수 없는 아이디 입니다.'),
+                                );
+                              },
+                            );
+                          }
+                        }
+                      },
+                      child: Text(
+                        '중복확인',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        minimumSize: Size.fromHeight(55),
+                        backgroundColor: Colors.black,
                       ),
                     ),
-                    style: ElevatedButton.styleFrom(
-                      elevation: 0,
-                      minimumSize: Size.fromHeight(55),
-                      backgroundColor: Colors.black,
+                    SizedBox(height: 16),
+                    CustomTextFormField(
+                      label: '비밀번호',
+                      hint: '숫자, 영문, 특수문자 조합 최소 8자',
+                      isNecessary: true,
+                      isPassword: true,
+                      hasLabel: true,
+                      onSaved: (value) {
+                        hashedPassword =
+                            sha256.convert(utf8.encode(value)).toString();
+                      },
+                      validator: (value) {
+                        password = value;
+                        if (value.toString().isEmpty) {
+                          return '비밀번호는 필수 입니다.';
+                        }
+                        if (!RegExp(
+                                r'^(?=.*?[A-Za-z])(?=.*?[0-9])(?=.*?[!@#\$&*~]).{8,}$')
+                            .hasMatch(value)) {
+                          return '비밀번호는 숫자, 영문, 특수문자 조합 최소 8자 입니다.';
+                        }
+                      },
                     ),
-                  ),
-                ],
-              )
-            ],
+                    CustomTextFormField(
+                      label: '비밀번호 재입력',
+                      hint: '비밀번호 재입력',
+                      isNecessary: true,
+                      isPassword: true,
+                      hasLabel: false,
+                      onSaved: (value) {},
+                      validator: (value) {
+                        if (password != value && value != '') {
+                          return '비밀번호가 일치하지 않습니다.';
+                        }
+                      },
+                    ),
+                    CustomTextFormField(
+                        label: '이메일',
+                        hint: '계정 분실 시 본인인증 정보로 활용됩니다.',
+                        isNecessary: true,
+                        isPassword: false,
+                        hasLabel: true,
+                        onSaved: (value) {
+                          email = value;
+                        },
+                        validator: (value) {
+                          if (value.toString().isEmpty) {
+                            return '이메일은 필수 입니다.';
+                          }
+                          if (!RegExp(r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+')
+                              .hasMatch(value)) {
+                            return '이메일이 아닙니다.';
+                          }
+                        }),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (formKey.currentState!.validate()) {
+                          formKey.currentState!.save();
+                          var data = await FirebaseFirestore.instance
+                              .collection('user')
+                              .doc(id)
+                              .get();
+                          if (data.data() == null) {
+                            final user = User(
+                              id: id,
+                              password: hashedPassword,
+                              email: email,
+                            );
+
+                            try {
+                              await FirebaseFirestore.instance
+                                  .collection(
+                                    'user',
+                                  )
+                                  .doc(id)
+                                  .set(user.toJson());
+                            } catch (e) {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                      content: Text('$e 에러가 발생했습니다.'));
+                                },
+                              );
+                              return;
+                            }
+                            Navigator.popUntil(context, (route) => route.isFirst);
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  content: Text('정상적으로 가입되었습니다.'),
+                                );
+                              },
+                            );
+                            return;
+                          } else {
+                            if ((data.data() as Map<String, dynamic>)
+                                .containsValue(id)) {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  return AlertDialog(
+                                    content: Text('사용할 수 없는 아이디 입니다.'),
+                                  );
+                                },
+                              );
+                              return;
+                            }
+                          }
+                        }
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              content: Text('필수 내용들을 입력해주세요.'),
+                            );
+                          },
+                        );
+                        return;
+                      },
+                      child: Text(
+                        '회원가입',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        minimumSize: Size.fromHeight(55),
+                        backgroundColor: Colors.black,
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
           ),
         ),
       ),
