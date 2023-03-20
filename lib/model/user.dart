@@ -22,4 +22,9 @@ class User {
       'email': email,
     };
   }
+
+  @override
+  String toString() {
+    return 'id: $id, password: $password, email: $email';
+  }
 }
