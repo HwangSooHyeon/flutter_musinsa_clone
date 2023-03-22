@@ -5,6 +5,7 @@ import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_musinsa_clone/component/custom_text_form_field.dart';
 import 'package:flutter_musinsa_clone/model/user.dart';
+import 'package:flutter_musinsa_clone/repository/user_repository.dart';
 
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
@@ -17,6 +18,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
+    final instance = FirebaseFirestore.instance;
+    final userRepository = UserRepository(instance: instance);
+    
     String password = '';
     String id = '';
     String hashedPassword = '';
@@ -47,13 +51,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
       body: Container(
         color: Colors.white,
         alignment: Alignment.topCenter,
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Form(
           key: formKey,
           child: SingleChildScrollView(
             child: Column(
               children: [
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Column(
                   children: [
                     CustomTextFormField(
@@ -77,26 +81,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     ),
                     ElevatedButton(
                       onPressed: () async {
-                        var data = await FirebaseFirestore.instance
-                            .collection('user')
-                            .doc(id)
-                            .get();
-                        if (data.data() == null) {
+                        var response = await userRepository.getUser(id: id);
+                        if (response == null) {
+                          if (!mounted) {
+                            return;
+                          }
                           showDialog(
                             context: context,
                             builder: (context) {
-                              return AlertDialog(
+                              return const AlertDialog(
                                 content: Text('사용할 수 있는 아이디 입니다.'),
                               );
                             },
                           );
                         } else {
-                          if ((data.data() as Map<String, dynamic>)
-                              .containsValue(id)) {
+                          if (response.id == id) {
+                            if (!mounted) {
+                              return;
+                            }
                             showDialog(
                               context: context,
                               builder: (context) {
-                                return AlertDialog(
+                                return const AlertDialog(
                                   content: Text('사용할 수 없는 아이디 입니다.'),
                                 );
                               },
@@ -104,19 +110,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           }
                         }
                       },
-                      child: Text(
+                      style: ElevatedButton.styleFrom(
+                        elevation: 0,
+                        minimumSize: const Size.fromHeight(55),
+                        backgroundColor: Colors.black,
+                      ),
+                      child: const Text(
                         '중복확인',
                         style: TextStyle(
                           color: Colors.white,
                         ),
                       ),
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        minimumSize: Size.fromHeight(55),
-                        backgroundColor: Colors.black,
-                      ),
                     ),
-                    SizedBox(height: 16),
+                    const SizedBox(height: 16),
                     CustomTextFormField(
                       label: '비밀번호',
                       hint: '숫자, 영문, 특수문자 조합 최소 8자',
@@ -174,25 +180,19 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       onPressed: () async {
                         if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
-                          var data = await FirebaseFirestore.instance
-                              .collection('user')
-                              .doc(id)
-                              .get();
-                          if (data.data() == null) {
+                          var response = await userRepository.getUser(id: id);
+                          if (response == null) {
                             final user = User(
                               id: id,
                               password: hashedPassword,
                               email: email,
                             );
-
                             try {
-                              await FirebaseFirestore.instance
-                                  .collection(
-                                    'user',
-                                  )
-                                  .doc(id)
-                                  .set(user.toJson());
+                              await userRepository.createUser(user: user);
                             } catch (e) {
+                              if (!mounted) {
+                                return;
+                              }
                               showDialog(
                                 context: context,
                                 builder: (context) {
@@ -202,23 +202,28 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               );
                               return;
                             }
+                            if (!mounted) {
+                              return;
+                            }
                             Navigator.popUntil(context, (route) => route.isFirst);
                             showDialog(
                               context: context,
                               builder: (context) {
-                                return AlertDialog(
+                                return const AlertDialog(
                                   content: Text('정상적으로 가입되었습니다.'),
                                 );
                               },
                             );
                             return;
                           } else {
-                            if ((data.data() as Map<String, dynamic>)
-                                .containsValue(id)) {
+                            if (response.id == id) {
+                              if (!mounted) {
+                                return;
+                              }
                               showDialog(
                                 context: context,
                                 builder: (context) {
-                                  return AlertDialog(
+                                  return const AlertDialog(
                                     content: Text('사용할 수 없는 아이디 입니다.'),
                                   );
                                 },
@@ -227,26 +232,29 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             }
                           }
                         }
+                        if (!mounted) {
+                          return;
+                        }
                         showDialog(
                           context: context,
                           builder: (context) {
-                            return AlertDialog(
+                            return const AlertDialog(
                               content: Text('필수 내용들을 입력해주세요.'),
                             );
                           },
                         );
                         return;
                       },
-                      child: Text(
-                        '회원가입',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
                         minimumSize: Size.fromHeight(55),
                         backgroundColor: Colors.black,
+                      ),
+                      child: const Text(
+                        '회원가입',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ],
