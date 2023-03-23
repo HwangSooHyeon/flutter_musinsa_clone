@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_musinsa_clone/screen/sign_in_screen.dart';
-import 'package:flutter_musinsa_clone/screen/sign_up_screen.dart';
+import 'package:flutter_musinsa_clone/screen/signed_in_screen.dart';
+import 'package:flutter_musinsa_clone/screen/unsigned_in_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-class MyScreen extends StatelessWidget {
+class MyScreen extends StatefulWidget {
   final ScrollController scrollController;
 
   const MyScreen({
@@ -12,84 +13,51 @@ class MyScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<MyScreen> createState() => _MyScreenState();
+}
+
+class _MyScreenState extends State<MyScreen> {
+  final secureStorage = FlutterSecureStorage();
+  dynamic userInfo = '';
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      _getUserInfo();
+    });
+  }
+
+  Future<bool> _getUserInfo() async {
+    userInfo = await secureStorage.read(key: 'signIn');
+    return true;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
         alignment: Alignment.topCenter,
         height: MediaQuery.of(context).size.height,
         padding: EdgeInsets.symmetric(horizontal: 16),
-        child: SingleChildScrollView(
-          controller: scrollController,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              AppBar(
-                elevation: 0,
-                backgroundColor: Colors.white,
+        child: FutureBuilder(
+          future: _getUserInfo(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return CircularProgressIndicator();
+            }
+
+            return SingleChildScrollView(
+              controller: widget.scrollController,
+              child: userInfo == ''
+                  ? UnsignedInScreen(
+                secureStorage: secureStorage,
+              )
+                  : SignedInScreen(
+                userInfo: userInfo.toString(),
               ),
-              Text(
-                '아직 무신사 회원이 아니신가요?',
-                style: TextStyle(
-                  fontSize: 20,
-                ),
-              ),
-              Text(
-                '회원만의 특별한 혜택을 누려보세요!',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              SizedBox(height: 8),
-              OutlinedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => SignUpScreen(),
-                    ),
-                  );
-                },
-                child: Text(
-                  '회원가입',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 15,
-                  ),
-                ),
-                style: OutlinedButton.styleFrom(
-                  side: BorderSide(
-                    color: Colors.black,
-                  ),
-                  minimumSize: Size.fromHeight(55),
-                ),
-              ),
-              SizedBox(height: 8),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => SignInScreen(),
-                    ),
-                  );
-                },
-                child: Text(
-                  '로그인',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 15,
-                  ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  minimumSize: Size.fromHeight(55),
-                  backgroundColor: CupertinoColors.systemBlue,
-                ),
-              ),
-            ],
-          ),
+            );
+          }
         ),
       ),
     );
