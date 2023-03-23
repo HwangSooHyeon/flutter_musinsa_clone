@@ -2,13 +2,17 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_musinsa_clone/model/user.dart';
+import 'package:flutter_musinsa_clone/screen/home_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class SignedInScreen extends StatefulWidget {
   final String userInfo;
+  final FlutterSecureStorage secureStorage;
 
   const SignedInScreen({
     Key? key,
     required this.userInfo,
+    required this.secureStorage,
   }) : super(key: key);
 
   @override
@@ -35,6 +39,18 @@ class _SignedInScreenState extends State<SignedInScreen> {
         Text('${user.id}'),
         Text('${user.password}'),
         Text('${user.email}'),
+        ElevatedButton(
+          onPressed: () async {
+            await widget.secureStorage.delete(key: 'signIn');
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) => HomeScreen(),
+              ),
+            );
+          },
+          child: Text('로그아웃'),
+        ),
       ],
     );
   }
