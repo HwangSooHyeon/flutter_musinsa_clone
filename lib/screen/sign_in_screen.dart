@@ -1,11 +1,33 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class SignInScreen extends StatelessWidget {
-  const SignInScreen({Key? key}) : super(key: key);
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:crypto/crypto.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_musinsa_clone/component/custom_text_form_field.dart';
+import 'package:flutter_musinsa_clone/repository/user_repository.dart';
+import 'package:flutter_musinsa_clone/screen/home_screen.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+class SignInScreen extends StatefulWidget {
+  final FlutterSecureStorage secureStorage;
+
+  const SignInScreen({
+    Key? key,
+    required this.secureStorage,
+  }) : super(key: key);
 
   @override
+  State<SignInScreen> createState() => _SignInScreenState();
+}
+
+class _SignInScreenState extends State<SignInScreen> {
+  @override
   Widget build(BuildContext context) {
-    final _formKey = GlobalKey<FormState>();
+    final formKey = GlobalKey<FormState>();
+    String id = '';
+    String password = '';
+    final instance = FirebaseFirestore.instance;
+    final userRepository = UserRepository(instance: instance);
 
     return Scaffold(
       appBar: AppBar(
@@ -32,39 +54,94 @@ class SignInScreen extends StatelessWidget {
       body: Container(
         color: Colors.white,
         alignment: Alignment.center,
-        padding: EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             children: [
-              SizedBox(height: 8),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: '아이디',
-                  border: OutlineInputBorder(),
-                ),
+              CustomTextFormField(
+                label: '아이디',
+                hint: '아이디',
+                isNecessary: false,
+                isPassword: false,
+                hasLabel: false,
+                onSaved: (value) {
+                  id = value;
+                },
+                validator: (value) {
+                  if (value.toString().isEmpty) {
+                    return '아이디를 입력하세요.';
+                  }
+                  return null;
+                },
               ),
-              SizedBox(height: 8),
-              TextFormField(
-                obscureText: true,
-                decoration: InputDecoration(
-                  labelText: '비밀번호',
-                  border: OutlineInputBorder(),
-                ),
+              CustomTextFormField(
+                label: '비밀번호',
+                hint: '비밀번호',
+                isNecessary: false,
+                isPassword: true,
+                hasLabel: false,
+                onSaved: (value) {
+                  password = sha256.convert(utf8.encode(value)).toString();
+                },
+                validator: (value) {
+                  if (value.toString().isEmpty) {
+                    return '비밀번호를 입력하세요.';
+                  }
+                  return null;
+                },
               ),
-              SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () {},
-                child: Text(
+                onPressed: () async {
+                  if (formKey.currentState!.validate()) {
+                    formKey.currentState!.save();
+                    var response = await userRepository.getUser(id: id);
+                    if (response == null) {
+                      if (!mounted) return;
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const AlertDialog(
+                            content: Text('아이디 혹은 비밀번호가 일치하지 않습니다.'),
+                          );
+                        },
+                      );
+                      return;
+                    }
+                    if (response.password == password) {
+                      String userInfo = jsonEncode(
+                        response.toJson(),
+                      );
+                      await widget.secureStorage.write(
+                        key: 'signIn',
+                        value: userInfo,
+                      );
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+                      return;
+                    } else {
+                      if (!mounted) return;
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return const AlertDialog(
+                            content: Text('아이디 혹은 비밀번호가 일치하지 않습니다.'),
+                          );
+                        },
+                      );
+                      return;
+                    }
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  minimumSize: const Size.fromHeight(55),
+                  backgroundColor: Colors.black,
+                ),
+                child: const Text(
                   '로그인',
                   style: TextStyle(
                     color: Colors.white,
                   ),
-                ),
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  minimumSize: Size.fromHeight(55),
-                  backgroundColor: Colors.black,
                 ),
               ),
             ],
