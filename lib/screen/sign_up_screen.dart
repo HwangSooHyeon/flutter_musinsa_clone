@@ -77,6 +77,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         if (!RegExp(r'^[a-zA-Z0-9]{5,11}$').hasMatch(value)) {
                           return '아이디는 영문, 숫자 5 - 11자 입니다.';
                         }
+                        return null;
                       },
                     ),
                     ElevatedButton(
@@ -143,6 +144,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             .hasMatch(value)) {
                           return '비밀번호는 숫자, 영문, 특수문자 조합 최소 8자 입니다.';
                         }
+                        return null;
                       },
                     ),
                     CustomTextFormField(
@@ -156,6 +158,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         if (password != value && value != '') {
                           return '비밀번호가 일치하지 않습니다.';
                         }
+                        return null;
                       },
                     ),
                     CustomTextFormField(
@@ -247,7 +250,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       },
                       style: ElevatedButton.styleFrom(
                         elevation: 0,
-                        minimumSize: Size.fromHeight(55),
+                        minimumSize: const Size.fromHeight(55),
                         backgroundColor: Colors.black,
                       ),
                       child: const Text(
