@@ -18,7 +18,7 @@ class MyScreen extends StatefulWidget {
 
 class _MyScreenState extends State<MyScreen> {
   final secureStorage = FlutterSecureStorage();
-  dynamic userInfo = '';
+  dynamic userInfo;
 
   @override
   void initState() {
@@ -49,12 +49,13 @@ class _MyScreenState extends State<MyScreen> {
 
             return SingleChildScrollView(
               controller: widget.scrollController,
-              child: userInfo == ''
+              child: userInfo == null
                   ? UnsignedInScreen(
                 secureStorage: secureStorage,
               )
                   : SignedInScreen(
                 userInfo: userInfo.toString(),
+                secureStorage: secureStorage,
               ),
             );
           }
