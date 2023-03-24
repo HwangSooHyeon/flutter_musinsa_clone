@@ -7,8 +7,10 @@ import '../const/const.dart';
 class HomeWidget extends StatelessWidget {
   ScrollController scrollController;
 
-  HomeWidget({Key? key, required this.scrollController})
-      : super(key: key);
+  HomeWidget({
+    Key? key,
+    required this.scrollController,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
