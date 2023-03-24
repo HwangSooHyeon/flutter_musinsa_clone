@@ -7,6 +7,8 @@ import 'package:flutter_musinsa_clone/component/custom_text_form_field.dart';
 import 'package:flutter_musinsa_clone/model/user.dart';
 import 'package:flutter_musinsa_clone/repository/user_repository.dart';
 
+import 'home_screen.dart';
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({Key? key}) : super(key: key);
 
@@ -20,7 +22,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     final formKey = GlobalKey<FormState>();
     final instance = FirebaseFirestore.instance;
     final userRepository = UserRepository(instance: instance);
-    
+
     String password = '';
     String id = '';
     String hashedPassword = '';
@@ -208,7 +210,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             if (!mounted) {
                               return;
                             }
-                            Navigator.popUntil(context, (route) => route.isFirst);
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => HomeScreen(),
+                              ),
+                              (route) => false,
+                            );
                             showDialog(
                               context: context,
                               builder: (context) {

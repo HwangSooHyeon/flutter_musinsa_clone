@@ -117,7 +117,13 @@ class _SignInScreenState extends State<SignInScreen> {
                         value: userInfo,
                       );
                       if (!mounted) return;
-                      Navigator.push(context, MaterialPageRoute(builder: (_) => HomeScreen()));
+                      Navigator.pushAndRemoveUntil(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => HomeScreen(),
+                        ),
+                        (route) => false,
+                      );
                       return;
                     } else {
                       if (!mounted) return;
